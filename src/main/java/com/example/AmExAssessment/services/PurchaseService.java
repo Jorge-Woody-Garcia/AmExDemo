@@ -1,11 +1,16 @@
 package com.example.AmExAssessment.services;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,6 +21,9 @@ import com.example.AmExAssessment.repo.ProductRepo;
 
 @Service
 public class PurchaseService {
+	
+	Map<String, OrderSummary> appUserOrders = new ConcurrentHashMap<String, OrderSummary>();
+	
 	@Autowired
 	private ProductRepo productRepo;
 	
@@ -51,6 +59,20 @@ public class PurchaseService {
 
 		OrderSummary sum = new OrderSummary(listOfOrders, grandTotal);
 		
+		appUserOrders.put(sum.getId().toString(), sum);
+		
+		return sum;
+	}
+	
+	public Collection<OrderSummary> getAllOrders(){
+
+		Collection<OrderSummary> allSummaries = appUserOrders.values();
+		
+		return allSummaries;
+	}
+	
+	public OrderSummary getOrderById(UUID id){
+		OrderSummary sum = appUserOrders.get(id.toString());
 		return sum;
 	}
 }

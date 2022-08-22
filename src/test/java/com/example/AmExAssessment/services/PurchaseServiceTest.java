@@ -120,7 +120,7 @@ class PurchaseServiceTest {
 		order = new Order(3, 4);
 		Order order2 = new Order(4, 6);
 		Order order3 = new Order(2, 6);
-		Order order4 = new Order(1, 6);
+		Order order4 = new Order(1, 4);
 		orders.add(order);
 		orders.add(order2);
 		orders.add(order3);
@@ -133,6 +133,70 @@ class PurchaseServiceTest {
 		assertEquals(6.10, orderSummary.getGrandTotal());
 	}
 	
+	@Test
+	void itShouldBeAbleToReturnAllOrdersMade() {
+		PurchaseService testService = new PurchaseService();
+		
+		order = new Order(3, 4);
+		Order order2 = new Order(4, 6);
+		Order order3 = new Order(2, 6);
+		Order order4 = new Order(1, 6);
+		orders.add(order);
+		orders.add(order2);
+		orders.add(order3);
+		orders.add(order4);
+		
+		//when
+		orderSummary = testService.purchaseItems(orders);
+		orderSummary = testService.purchaseItems(orders);
+		orderSummary = testService.purchaseItems(orders);
+		
+		//then
+		assertEquals(3, testService.getAllOrders().size());
+	}
+	
+	@Test
+	void itShouldBeAbleToReturnASingleOrderSummary() {
+		PurchaseService testService = new PurchaseService();
+		
+		order = new Order(3, 4);
+		Order order2 = new Order(4, 6);
+		Order order3 = new Order(2, 6);
+		Order order4 = new Order(1, 6);
+		orders.add(order);
+		orders.add(order2);
+		orders.add(order3);
+		orders.add(order4);
+		
+		//when
+		orderSummary = testService.purchaseItems(orders);
+		
+		order = new Order(1, 8);
+		order2 = new Order(2, 6);
+		order3 = new Order(3, 6);
+		order4 = new Order(4, 10);
+		orders.clear();
+		orders.add(order);
+		orders.add(order2);
+		orders.add(order3);
+		orders.add(order4);
+		OrderSummary orderSummary1 = testService.purchaseItems(orders);
+		
+		order = new Order(1, 4);
+		order2 = new Order(4, 6);
+		order3 = new Order(2, 6);
+		order4 = new Order(1, 6);
+		orders.clear();
+		orders.add(order);
+		orders.add(order2);
+		orders.add(order3);
+		orders.add(order4);
+		OrderSummary orderSummary2 = testService.purchaseItems(orders);
+		
+		//then
+		
+		assertEquals(orderSummary1, testService.getOrderById(orderSummary1.getId()));
+	}
 	
 	
 	
