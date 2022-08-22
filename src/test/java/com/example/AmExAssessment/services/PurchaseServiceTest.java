@@ -25,7 +25,6 @@ class PurchaseServiceTest {
 		
 	@BeforeEach
 	void setup() {
-		
 		orders = new ArrayList<>();
 		
 	}
@@ -36,6 +35,12 @@ class PurchaseServiceTest {
 		assertEquals(1, product.getId());
 		assertEquals("apple", product.getName());
 		assertEquals(1.00, product.getPrice());
+	}
+	
+	@Test
+	public void itShouldNotAllowProductToHaveADenominatorOf0() {
+		Product product = new Product();
+		assertThrows(IllegalArgumentException.class, () -> { product.setDiscountDenominator(0); });
 	}
 	
 	@Test
@@ -92,7 +97,7 @@ class PurchaseServiceTest {
 	}
 	
 	@Test
-	void itShouldAddAllOrdersCorrectlyIntoGrandTota() {
+	void itShouldAddAllOrdersCorrectlyIntoGrandTotal() {
 		//given
 		PurchaseService testService = new PurchaseService();
 		order = new Order(2, 4);
@@ -107,4 +112,28 @@ class PurchaseServiceTest {
 		//then
 		assertEquals(4.00, orderSummary.getGrandTotal());
 	}
+	
+	@Test
+	void itShouldAddAllOrdersCorrectlyIntoGrandTotalAfterApplyingDiscount() {
+		PurchaseService testService = new PurchaseService();
+		
+		order = new Order(3, 4);
+		Order order2 = new Order(4, 6);
+		Order order3 = new Order(2, 6);
+		Order order4 = new Order(1, 6);
+		orders.add(order);
+		orders.add(order2);
+		orders.add(order3);
+		orders.add(order4);
+		
+		//when
+		orderSummary = testService.purchaseItems(orders);
+		
+		//then
+		assertEquals(6.10, orderSummary.getGrandTotal());
+	}
+	
+	
+	
+	
 }

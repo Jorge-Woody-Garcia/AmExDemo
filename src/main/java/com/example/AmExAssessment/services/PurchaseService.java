@@ -31,11 +31,20 @@ public class PurchaseService {
 		double grandTotal = 0;
 
 		for(Order order: orders) {
-			System.out.println(order.getProductID());
+			System.out.println(order.getQuantityPurchased());
 			prod = productRepo.getProductById((int) order.getProductID());
 			double price = prod.getPrice();
 			
-			order.setTotal(price*order.getQuantityPurchased());
+			if(prod.isDiscount() == true) {
+				
+				int remainder = order.getQuantityPurchased()%prod.getDiscountNumerator();
+				double x = ((order.getQuantityPurchased()-remainder)/prod.getDiscountNumerator())*prod.getPrice()*prod.getDiscountDenominator();
+				double orderTotal = x + (order.getQuantityPurchased()%prod.getDiscountNumerator())*prod.getPrice();
+				order.setTotal(orderTotal);
+			}
+			else {
+				order.setTotal(price*order.getQuantityPurchased());
+			}
 			grandTotal += order.getTotal();
 			listOfOrders.add(order);
 		}
